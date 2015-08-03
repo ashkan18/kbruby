@@ -51,12 +51,12 @@ class ArtistService
   	kevin_bacon_id = 'Kevin Bacon'.parameterize
 
   	until to_investigate.empty? do
-  		# get item we need to check from first item of list
   		current_check = to_investigate.shift			
 
-  		# current check will have a tuple of artist, movie
+  		# current check is a current path, get the last item artist from the path
   		artist_id = current_check[-1][0]
 
+  		# for each movies of this artist get all co stars and check them
   		get_artist_by_id(artist_id).films.each do |movie_id|
 				get_movie_by_id(movie_id).artists.each do |co_start_id|
 					co_star = $artist_service.get_artist_by_id(co_start_id)
@@ -64,7 +64,6 @@ class ArtistService
 					return current_check.push([kevin_bacon_id, movie_id]) if co_star.id == kevin_bacon_id
 						
 					if not investigated.include?(co_star.id)
-						# add co_start movie combination to 
 						investigated.add(co_star.id)
 						new_check = current_check.clone
 						new_check.push([co_star.id, movie_id])
