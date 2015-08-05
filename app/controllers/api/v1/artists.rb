@@ -11,13 +11,13 @@ module API
 
         desc "Return an Artist given an id."
         get ':id' do
-          present $artist_service.get_artist_by_id(params[:id])
+          present $artist_service.get_artist_by_id(params[:id].parameterize)
         end
 
         resources :kbdegree do
           desc "Get Kevin Bacon Degree for an artist id"
           get ':id' do
-            shortest_path = $artist_service.find_shortest_path(params[:id])
+            shortest_path = $artist_service.find_shortest_path(params[:id].parameterize)
           end
         end        
       end
