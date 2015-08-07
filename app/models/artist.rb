@@ -1,12 +1,9 @@
 class Artist
   include Mongoid::Document
-  attr_accessor :id, :name, :image, :films
   
-
-  field :id
+  field :uid
   field :name
-  field :image_url
-  
+  field :image  
   field :films, type: Array
   
   validates_presence_of :id, :name

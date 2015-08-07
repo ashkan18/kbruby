@@ -77,18 +77,17 @@ class ArtistService
   def readfile(file)
     json = JSON.parse(file.read)
     
-    movie = Movie.find_or_create_by(id: json['film']['name'].parameterize, 
-                                    name: json['film']['name'], 
-                                    image: json['film']['image'], 
-                                    artists: [])
+    movie = Movie.find_or_create_by(uid: json['film']['name'].parameterize)
+    movie.name = json['film']['name']
+    movie.image = json['film']['image']
+
     json['cast'].each do |cast|
     	artist_id = cast['name'].parameterize
-    	artist = Artist.find_or_create_by(id: artist_id, 
-                                     name: cast['name'], 
-                                     image: cast['image'],
-                                     films: []) 
+    	artist = Artist.find_or_create_by(uid: artist_id)
+      artist.name = cast['name']
+      artist.image = cast['image']
     	
-    	artist.push(films: movie.id)
+    	artist.push(films: movie.uid)
       artist.save 
     	movie.push(artists: artist_id)
     end

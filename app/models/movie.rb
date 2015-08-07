@@ -1,8 +1,7 @@
 class Movie
 	include Mongoid::Document
-	attr_accessor :id, :name, :image, :artists
-
-	field :id
+	
+	field :uid
 	field :name
 	field :image
 	field :artists, type: Array
