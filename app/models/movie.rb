@@ -1,13 +1,12 @@
 class Movie
+	include Mongoid::Document
 	attr_accessor :id, :name, :image, :artists
 
-	def initialize(id, name, image, artists = [])
-		@id = id
-		@name = name
-		@image = image
-		@artists = artists
-	end
-
+	field :id
+	field :name
+	field :image
+	field :artists, type: Array
+	
 	def to_s
 		"#@name"
 	end

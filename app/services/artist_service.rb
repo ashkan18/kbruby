@@ -5,8 +5,6 @@ require 'set'
 
 class ArtistService
   def initialize
-    @artists = {}
-    @films = {}
     Dir["db/films/*.json"].each do |filePath| 
     	puts filePath
     	File.open(filePath, "r") { |file| readfile(file)}
@@ -15,19 +13,19 @@ class ArtistService
   end
 
   def get_all_artists
-    @artists
+    Artist.all
   end 
 
   def get_artist_by_id(artist_id)
-  	@artists[artist_id]
+  	Artist.find_by(id: artist_id)
   end
 
   def get_all_movies
-    @films
+    Movie.all
   end
 
   def get_movie_by_id(movie_id)
-  	@films[movie_id]
+  	Movie.find_by(id: movie_id)
   end
 
   def find_shortest_path(artist_id)
@@ -79,16 +77,21 @@ class ArtistService
   def readfile(file)
     json = JSON.parse(file.read)
     
-    movie = Movie.new(json['film']['name'].parameterize, json['film']['name'], json['film']['image'])
-    @films[movie.id] = movie
-    
+    movie = Movie.find_or_create_by(id: json['film']['name'].parameterize, 
+                                    name: json['film']['name'], 
+                                    image: json['film']['image'], 
+                                    artists: [])
     json['cast'].each do |cast|
     	artist_id = cast['name'].parameterize
-    	@artists[artist_id] = Artist.new(artist_id, cast['name'], cast['image']) unless @artists.has_key?(artist_id)
+    	artist = Artist.find_or_create_by(id: artist_id, 
+                                     name: cast['name'], 
+                                     image: cast['image'],
+                                     films: []) 
     	
-    	@artists[artist_id].films.push(movie.id) 
-    	movie.artists.push(artist_id)
+    	artist.push(films: movie.id)
+      artist.save 
+    	movie.push(artists: artist_id)
     end
-
+    movie.save
   end
 end

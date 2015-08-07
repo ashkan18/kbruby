@@ -1,13 +1,15 @@
 class Artist
+  include Mongoid::Document
   attr_accessor :id, :name, :image, :films
   
-  def initialize(id, name, image, films = [])
-    # Instance variables  
-    @id = id
-    @name = name
-    @image = image  
-    @films = films
-  end 
+
+  field :id
+  field :name
+  field :image_url
+  
+  field :films, type: Array
+  
+  validates_presence_of :id, :name
 
   def to_s
   	"#@name"
