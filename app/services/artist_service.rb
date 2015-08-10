@@ -5,10 +5,13 @@ require 'set'
 
 class ArtistService
   def initialize
-    Dir["db/films/*.json"].each do |filePath| 
-    	puts filePath
-    	File.open(filePath, "r") { |file| readfile(file)}
-    end
+  	json_files = Dir["db/films/*.json"]
+  	if Movie.all.empty? 
+    	json_files.each do |filePath| 
+	    	puts filePath
+	    	File.open(filePath, "r") { |file| readfile(file)}
+	    end
+	  end 
    
   end
 
@@ -17,7 +20,7 @@ class ArtistService
   end 
 
   def get_artist_by_id(artist_id)
-  	Artist.find_by(id: artist_id)
+  	Artist.find_by(uid: artist_id)
   end
 
   def get_all_movies
@@ -25,7 +28,7 @@ class ArtistService
   end
 
   def get_movie_by_id(movie_id)
-  	Movie.find_by(id: movie_id)
+  	Movie.find_by(uid: movie_id)
   end
 
   def find_shortest_path(artist_id)
@@ -59,12 +62,12 @@ class ArtistService
 				get_movie_by_id(movie_id).artists.each do |co_start_id|
 					co_star = $artist_service.get_artist_by_id(co_start_id)
 
-					return current_check.push([kevin_bacon_id, movie_id]) if co_star.id == kevin_bacon_id
+					return current_check.push([kevin_bacon_id, movie_id]) if co_star.uid == kevin_bacon_id
 						
-					if not investigated.include?(co_star.id)
-						investigated.add(co_star.id)
+					unless investigated.include?(co_star.uid)
+						investigated.add(co_star.uid)
 						new_check = current_check.clone
-						new_check.push([co_star.id, movie_id])
+						new_check.push([co_star.uid, movie_id])
 						to_investigate.push(new_check)
 					end
 
