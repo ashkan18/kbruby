@@ -63,7 +63,7 @@ class ArtistService
 
 					return current_check.push([kevin_bacon_id, movie_id]) if co_star.id == kevin_bacon_id
 						
-					if not investigated.include?(co_star.id)
+					unless investigated.include?(co_star.id)
 						investigated.add(co_star.id)
 						new_check = current_check.clone
 						new_check.push([co_star.id, movie_id])
