@@ -11,8 +11,7 @@ class ArtistService
 	    	puts filePath
 	    	File.open(filePath, "r") { |file| readfile(file)}
 	    end
-	  end 
-   
+	  end  
   end
 
   def get_all_artists
@@ -58,16 +57,14 @@ class ArtistService
   		artist_id = current_check[-1][0]
 
   		# for each movies of this artist get all co stars and check them
-  		get_artist_by_id(artist_id).films.each do |movie_id|
-				get_movie_by_id(movie_id).artists.each do |co_start_id|
-					co_star = $artist_service.get_artist_by_id(co_start_id)
-
-					return current_check.push([kevin_bacon_id, movie_id]) if co_star.uid == kevin_bacon_id
+  		Movie.in(uid:get_artist_by_id(artist_id).films).each do |movie|
+        Artist.in(uid: movie.artists).each do |co_star|
+					return current_check.push([kevin_bacon_id, movie.uid]) if co_star.uid == kevin_bacon_id
 						
 					unless investigated.include?(co_star.uid)
 						investigated.add(co_star.uid)
 						new_check = current_check.clone
-						new_check.push([co_star.uid, movie_id])
+						new_check.push([co_star.uid, movie.uid])
 						to_investigate.push(new_check)
 					end
 
